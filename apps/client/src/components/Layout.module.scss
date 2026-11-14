@@ -1,0 +1,55 @@
+@use '../styles/tokens' as t;
+
+.page {
+  max-width: t.$column-width;
+  margin: 0 auto;
+  padding: t.$space-3 t.$space-2 t.$space-5;
+}
+
+.brand {
+  display: inline-block;
+  margin-bottom: t.$space-3;
+  color: t.$color-text;
+  font-size: t.$font-progress;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.card {
+  padding: t.$space-4 t.$space-3;
+  background: t.$color-surface;
+  border-radius: t.$radius-card;
+  box-shadow: t.$shadow-soft;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: t.$space-2;
+  margin-top: t.$space-4;
+}
+
+.hint {
+  margin: 0;
+  color: t.$color-text-muted;
+}
+
+.error {
+  margin-top: t.$space-3;
+  padding: t.$space-2 t.$space-3;
+  background: t.$color-error-bg;
+  color: t.$color-error-text;
+  border-radius: t.$radius-card;
+  font-weight: 700;
+
+  p {
+    margin: 0;
+  }
+}
+
+.errorDetail {
+  margin-top: t.$space-1 !important;
+  font-size: t.$font-progress;
+  font-weight: 400;
+}

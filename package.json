@@ -1,0 +1,38 @@
+{
+  "name": "quiz-interview-repo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.21.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "concurrently --names server,client --prefix-colors blue,green \"pnpm --filter server dev\" \"pnpm --filter client dev\"",
+    "seed": "node scripts/seed.ts",
+    "doctor": "node scripts/doctor.ts",
+    "test": "pnpm --filter server test && pnpm --filter client test",
+    "test:server": "pnpm --filter server test",
+    "test:client": "pnpm --filter client test",
+    "lint": "eslint .",
+    "typecheck": "pnpm -r typecheck && tsc --noEmit -p tsconfig.json",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "build": "pnpm --filter client build && pnpm --filter server typecheck"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-dynamodb": "catalog:",
+    "@aws-sdk/lib-dynamodb": "catalog:",
+    "@eslint/js": "catalog:",
+    "@types/node": "catalog:",
+    "concurrently": "catalog:",
+    "eslint": "catalog:",
+    "eslint-config-prettier": "catalog:",
+    "eslint-plugin-react-hooks": "catalog:",
+    "globals": "catalog:",
+    "prettier": "catalog:",
+    "shared-types": "workspace:*",
+    "typescript": "catalog:",
+    "typescript-eslint": "catalog:"
+  }
+}

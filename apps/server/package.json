@@ -1,0 +1,24 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.ts",
+    "start": "node src/server.ts",
+    "test": "c8 --reporter=text --reporter=lcov --include=\"src/**/*.ts\" --exclude=\"src/**/*.test.ts\" --exclude=\"src/test-helpers.ts\" --all node --test \"src/**/*.test.ts\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "catalog:",
+    "@aws-sdk/lib-dynamodb": "catalog:",
+    "express": "catalog:",
+    "shared-types": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/express": "catalog:",
+    "@types/node": "catalog:",
+    "c8": "catalog:",
+    "typescript": "catalog:"
+  }
+}

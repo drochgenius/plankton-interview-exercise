@@ -1,0 +1,85 @@
+@use '../styles/tokens' as t;
+
+.quizList {
+  display: flex;
+  flex-direction: column;
+  gap: t.$space-3;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.quizItem {
+  padding: t.$space-3;
+  background: t.$color-surface;
+  border-radius: t.$radius-card;
+  box-shadow: t.$shadow-soft;
+
+  h2 {
+    margin-bottom: t.$space-1;
+  }
+}
+
+.meta {
+  color: t.$color-text-muted;
+  font-weight: 700;
+}
+
+.steps {
+  margin: 0 0 t.$space-3;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: t.$space-2;
+    margin-bottom: t.$space-1;
+    counter-increment: step;
+
+    &::before {
+      content: counter(step);
+      display: inline-flex;
+      flex: none;
+      align-items: center;
+      justify-content: center;
+      width: 2.25rem;
+      height: 2.25rem;
+      background: t.$color-accent;
+      color: t.$color-on-accent;
+      border-radius: 50%;
+      font-weight: 800;
+    }
+  }
+}
+
+.label {
+  display: block;
+  margin-bottom: t.$space-1;
+  font-weight: 800;
+}
+
+.nameInput {
+  width: 100%;
+  min-height: t.$touch-target;
+  padding: 0.5rem t.$space-2;
+  border: 4px solid t.$color-primary;
+  border-radius: t.$radius-card;
+  background: t.$color-surface;
+  color: t.$color-text;
+  font-family: inherit;
+  font-size: t.$font-choice;
+  font-weight: 700;
+}
+
+.score {
+  margin: t.$space-2 0;
+  font-size: 4rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.celebrate {
+  font-size: 3rem;
+}
