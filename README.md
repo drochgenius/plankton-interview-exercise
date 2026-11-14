@@ -22,7 +22,7 @@ pnpm seed                # create the tables and load two quizzes
 pnpm dev                 # start the server and the client
 ```
 
-Open **http://localhost:5173**.
+`pnpm dev` opens **http://localhost:5173** in your browser. If it does not open, visit that address yourself.
 
 Check that your setup is healthy at any time:
 
@@ -39,6 +39,17 @@ pnpm test           # server and client
 pnpm test:server    # server only (node:test, coverage with c8)
 pnpm test:client    # client only (Vitest and React Testing Library, V8 coverage)
 ```
+
+## Formatting
+
+Prettier formats the code. Run it from the repository root:
+
+```bash
+pnpm format         # fix formatting in every file
+pnpm format:check   # only check, and fail if a file needs formatting
+```
+
+Most editors can also format on save with the Prettier extension. The settings are in `.prettierrc`.
 
 ## Ports
 

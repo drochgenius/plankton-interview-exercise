@@ -19,6 +19,10 @@ export function QuestionPage() {
   if (!session || session.quizId !== id) {
     return <Navigate to={`/quizzes/${id}`} replace />;
   }
+  // Already finished (for example the player pressed the browser Back button).
+  if (session.submission) {
+    return <Navigate to={`/quizzes/${id}/result`} replace />;
+  }
 
   const total = session.questions.length;
   const index = session.currentIndex;

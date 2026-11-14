@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
+    open: true, // open the browser when `pnpm dev` starts
     proxy: { '/api': 'http://localhost:3001' },
   },
   test: {

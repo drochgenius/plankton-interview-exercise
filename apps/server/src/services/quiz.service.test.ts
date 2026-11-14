@@ -88,6 +88,7 @@ describe('QuizService', () => {
       ['a missing participantName', { answers: [] }],
       ['an empty participantName', { participantName: '   ', answers: [] }],
       ['a participantName that is not a string', { participantName: 5, answers: [] }],
+      ['a participantName that is too long', { participantName: 'x'.repeat(51), answers: [] }],
       ['answers that are not an array', { participantName: 'Sam', answers: 'x' }],
       [
         'an answer with missing fields',

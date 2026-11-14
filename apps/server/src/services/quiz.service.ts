@@ -6,6 +6,8 @@ import type { QuizModel } from '../model/quiz.model.ts';
 import { SubmissionModel } from '../model/submission.model.ts';
 import { NotFoundError, ValidationError } from './errors.ts';
 
+export const MAX_NAME_LENGTH = 50;
+
 export class QuizService {
   quizDao: QuizDao;
   submissionDao: SubmissionDao;
@@ -57,6 +59,9 @@ export class QuizService {
 
     if (typeof participantName !== 'string' || participantName.trim() === '') {
       throw new ValidationError('participantName must be a non-empty string.');
+    }
+    if (participantName.trim().length > MAX_NAME_LENGTH) {
+      throw new ValidationError(`participantName must be at most ${MAX_NAME_LENGTH} characters.`);
     }
     if (!Array.isArray(answers)) {
       throw new ValidationError('answers must be an array.');

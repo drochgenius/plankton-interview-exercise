@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, useNavigate } from 'react-router-dom';
 import type { PublicQuiz, QuizSummary, Submission } from 'shared-types';
 import { App } from './App';
 import { routerFuture } from './routerFuture';
@@ -78,12 +78,19 @@ export function mockFetch(routes: Record<string, Handler>) {
   return fn;
 }
 
+/** Stands in for the browser Back button, which MemoryRouter does not have. */
+function HistoryProbe() {
+  const navigate = useNavigate();
+  return <button onClick={() => navigate(-1)}>test: previous page</button>;
+}
+
 export function renderApp(route: string) {
   const user = userEvent.setup();
   render(
     <MemoryRouter initialEntries={[route]} future={routerFuture}>
       <QuizSessionProvider>
         <App />
+        <HistoryProbe />
       </QuizSessionProvider>
     </MemoryRouter>,
   );

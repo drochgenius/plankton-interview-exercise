@@ -80,6 +80,7 @@ export function IntroPage() {
             id="participant-name"
             className={styles.nameInput}
             value={name}
+            maxLength={50}
             autoComplete="off"
             onChange={(event) => setName(event.target.value)}
           />

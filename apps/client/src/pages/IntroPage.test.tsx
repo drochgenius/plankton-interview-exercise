@@ -46,6 +46,12 @@ describe('IntroPage', () => {
     expect(screen.queryByText('Type your name to start.')).not.toBeInTheDocument();
   });
 
+  it('limits the name length', async () => {
+    mockFetch(quizRoute);
+    renderApp(ROUTE);
+    expect(await screen.findByLabelText('Your name')).toHaveAttribute('maxlength', '50');
+  });
+
   it('starts the quiz when Start is clicked', async () => {
     mockFetch(quizRoute);
     const user = renderApp(ROUTE);

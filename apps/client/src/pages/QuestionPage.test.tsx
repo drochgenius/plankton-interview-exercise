@@ -119,3 +119,32 @@ describe('QuestionPage', () => {
     expect(await screen.findByText('You got 2 out of 2')).toBeInTheDocument();
   });
 });
+
+describe('QuestionPage after Finish', () => {
+  it('sends the player back to the result instead of allowing a second submission', async () => {
+    const submission = {
+      id: 's1',
+      quizId: 'math-practice',
+      participantName: 'Sam',
+      answers: [],
+      score: 2,
+      total: 2,
+      submittedAt: '2026-01-01T00:00:00.000Z',
+    };
+    const { user, fetchMock } = await startQuiz({
+      'POST /api/quizzes/math-practice/submissions': () => json(submission, 201),
+    });
+    await user.click(screen.getAllByRole('radio')[0]!);
+    await user.click(screen.getByRole('button', { name: 'Next' }));
+    await user.click(screen.getAllByRole('radio')[0]!);
+    await user.click(screen.getByRole('button', { name: 'Finish' }));
+    await screen.findByText('You got 2 out of 2');
+
+    await user.click(screen.getByRole('button', { name: 'test: previous page' }));
+
+    expect(await screen.findByText('You got 2 out of 2')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Finish' })).not.toBeInTheDocument();
+    const posts = fetchMock.mock.calls.filter(([, init]) => init?.method === 'POST');
+    expect(posts).toHaveLength(1);
+  });
+});
