@@ -1,0 +1,45 @@
+// Design tokens. Every text/background pair below has a contrast ratio of at least 4.5:1.
+
+// Colors
+$color-bg: #fff6e0; // soft page background
+$color-surface: #ffffff; // cards
+$color-text: #1f2a44; // text on bg and surface
+$color-text-muted: #4a5578; // secondary text on bg and surface
+$color-primary: #5a3fd0; // main color (buttons, selected border)
+$color-primary-dark: #4326ae; // hover and pressed
+$color-on-primary: #ffffff; // text on primary
+$color-accent: #ffb703; // accent (progress, highlights)
+$color-on-accent: #1f2a44; // text on accent
+$color-selected-bg: #e9e3ff; // selected answer card
+$color-disabled-bg: #d6daea;
+$color-on-disabled: #3d4766;
+$color-error-bg: #ffe4e1;
+$color-error-text: #9b1c10;
+$color-segment-empty: #ffffff;
+$color-segment-border: #5a3fd0;
+
+// Spacing
+$space-1: 0.5rem;
+$space-2: 1rem;
+$space-3: 1.5rem;
+$space-4: 2rem;
+$space-5: 3rem;
+
+// Shape
+$radius-card: 1.5rem;
+$radius-pill: 999px;
+$shadow-soft: 0 6px 18px rgba(31, 42, 68, 0.12);
+$shadow-lift: 0 10px 24px rgba(31, 42, 68, 0.18);
+
+// Type sizes
+$font-family: 'Nunito', system-ui, sans-serif;
+$font-body: 1.25rem; // 20px
+$font-question: 2rem; // 32px
+$font-choice: 1.5rem; // 24px
+$font-button: 1.5rem; // 24px
+$font-progress: 1.125rem; // 18px
+$font-title: 2.5rem;
+
+// Layout
+$column-width: 720px;
+$touch-target: 3.5rem; // 56px, above the 48px minimum

@@ -1,0 +1,37 @@
+@use '../styles/tokens' as t;
+
+.progress {
+  display: flex;
+  flex-direction: column;
+  gap: t.$space-1;
+  margin-bottom: t.$space-3;
+}
+
+.segments {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.segment {
+  flex: 1;
+  height: 1rem;
+  border: 3px solid t.$color-segment-border;
+  border-radius: t.$radius-pill;
+  background: t.$color-segment-empty;
+}
+
+.completed {
+  background: t.$color-primary;
+}
+
+.current {
+  background: t.$color-accent;
+  box-shadow: 0 0 0 3px t.$color-text;
+}
+
+.text {
+  margin: 0;
+  color: t.$color-text;
+  font-size: t.$font-progress;
+  font-weight: 700;
+}

@@ -1,0 +1,41 @@
+@use '../styles/tokens' as t;
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: t.$touch-target;
+  padding: 0.5rem 2.5rem;
+  border: 0;
+  border-radius: t.$radius-pill;
+  background: t.$color-primary;
+  color: t.$color-on-primary;
+  font-family: inherit;
+  font-size: t.$font-button;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: t.$shadow-soft;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    background 0.12s ease;
+
+  &:hover:not(:disabled) {
+    background: t.$color-primary-dark;
+    transform: translateY(-2px);
+    box-shadow: t.$shadow-lift;
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  &:disabled {
+    background: t.$color-disabled-bg;
+    color: t.$color-on-disabled;
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.8;
+  }
+}

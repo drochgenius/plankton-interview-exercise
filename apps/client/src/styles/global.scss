@@ -1,0 +1,56 @@
+@use 'tokens' as t;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: t.$color-bg;
+  color: t.$color-text;
+  font-family: t.$font-family;
+  font-size: t.$font-body;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+h1,
+h2 {
+  margin: 0 0 t.$space-2;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: t.$font-title;
+}
+
+h2 {
+  font-size: 1.75rem;
+}
+
+p {
+  margin: 0 0 t.$space-2;
+}
+
+a {
+  color: t.$color-primary-dark;
+  font-weight: 700;
+}
+
+:focus-visible {
+  outline: 4px solid t.$color-primary;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}
