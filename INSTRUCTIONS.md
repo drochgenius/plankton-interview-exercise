@@ -4,6 +4,7 @@
 
 You should be familiar with:
 
+- Git and Github
 - TypeScript, Node.js, React, CSS and Sass/SCSS
 - Container technologies (Docker / Podman)
 - REST services and databases
