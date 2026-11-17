@@ -9,7 +9,7 @@ You should be familiar with:
 - Container technologies (Docker / Podman)
 - REST services and databases
 - JavaScript testing frameworks
-- Code bundlers such as Vite
+- Code bundlers such as ViteXXX
 
 ## Before the Interview
 
