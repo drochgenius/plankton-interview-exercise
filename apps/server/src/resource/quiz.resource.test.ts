@@ -38,6 +38,14 @@ const fakeService: QuizServiceApi = {
     if (id !== 'sample') throw new NotFoundError('missing');
     return publicQuiz;
   },
+  async score(id) {
+    if (id !== 'sample') throw new NotFoundError('missing');
+    return { score: 1, total: 1 };
+  },
+  async getScoreboard(id) {
+    if (id !== 'sample') throw new NotFoundError('missing');
+    return { passed: [], failed: [] };
+  },
   async submit(id, body) {
     if (id !== 'sample') throw new NotFoundError('missing');
     if ((body as { participantName?: string })?.participantName === '') {

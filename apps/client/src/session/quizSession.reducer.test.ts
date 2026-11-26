@@ -17,6 +17,7 @@ describe('sessionReducer', () => {
       questions,
       currentIndex: 0,
       answers: {},
+      score: null,
       submission: null,
     });
   });

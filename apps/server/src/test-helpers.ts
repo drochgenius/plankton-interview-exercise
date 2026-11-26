@@ -52,4 +52,8 @@ export class InMemorySubmissionDao implements SubmissionDao {
   async save(submission: SubmissionModel): Promise<void> {
     this.saved.push(submission);
   }
+
+  async listByQuiz(quizId: string): Promise<SubmissionModel[]> {
+    return this.saved.filter((s) => s.quizId === quizId);
+  }
 }

@@ -1,5 +1,13 @@
 import { randomUUID } from 'node:crypto';
-import type { Answer, PublicQuiz, QuizSummary, Submission } from 'shared-types';
+import {
+  isPassing,
+  type Answer,
+  type PublicQuiz,
+  type QuizSummary,
+  type Score,
+  type Scoreboard,
+  type Submission,
+} from 'shared-types';
 import type { QuizDao } from '../dao/quiz.dao.ts';
 import type { SubmissionDao } from '../dao/submission.dao.ts';
 import type { QuizModel } from '../model/quiz.model.ts';
@@ -7,6 +15,36 @@ import { SubmissionModel } from '../model/submission.model.ts';
 import { NotFoundError, ValidationError } from './errors.ts';
 
 export const MAX_NAME_LENGTH = 50;
+
+interface Checked {
+  quiz: QuizModel;
+  participantName: string;
+  answers: Answer[];
+  score: number;
+}
+
+/**
+ * Splits submissions into passed and failed boards.
+ * Passed: highest score first. Failed: lowest score first.
+ * Equal scores keep the earlier submission first.
+ */
+export function buildScoreboard(submissions: Submission[]): Scoreboard {
+  const byTime = (a: Submission, b: Submission) => a.submittedAt.localeCompare(b.submittedAt);
+  const passed = submissions
+    .filter((s) => isPassing(s.score, s.total))
+    .sort((a, b) => b.score - a.score || byTime(a, b));
+  const failed = submissions
+    .filter((s) => !isPassing(s.score, s.total))
+    .sort((a, b) => a.score - b.score || byTime(a, b));
+  const toEntry = ({ id, participantName, score, total, submittedAt }: Submission) => ({
+    id,
+    participantName,
+    score,
+    total,
+    submittedAt,
+  });
+  return { passed: passed.map(toEntry), failed: failed.map(toEntry) };
+}
 
 export class QuizService {
   quizDao: QuizDao;
@@ -27,11 +65,14 @@ export class QuizService {
     return quiz.toPublic();
   }
 
-  async submit(quizId: string, body: unknown): Promise<Submission> {
-    const quiz = await this.findQuiz(quizId);
-    const { participantName, answers } = this.validate(quiz, body);
+  /** Checks answers without saving them. */
+  async score(quizId: string, body: unknown): Promise<Score> {
+    const { quiz, score } = await this.check(quizId, body);
+    return { score, total: quiz.questions.length };
+  }
 
-    const score = this.score(quiz, answers);
+  async submit(quizId: string, body: unknown): Promise<Submission> {
+    const { quiz, participantName, answers, score } = await this.check(quizId, body);
     const submission = new SubmissionModel({
       id: randomUUID(),
       quizId: quiz.id,
@@ -43,6 +84,18 @@ export class QuizService {
     });
     await this.submissionDao.save(submission);
     return submission;
+  }
+
+  async getScoreboard(quizId: string): Promise<Scoreboard> {
+    const quiz = await this.findQuiz(quizId);
+    const submissions = await this.submissionDao.listByQuiz(quiz.id);
+    return buildScoreboard(submissions);
+  }
+
+  private async check(quizId: string, body: unknown): Promise<Checked> {
+    const quiz = await this.findQuiz(quizId);
+    const { participantName, answers } = this.validate(quiz, body);
+    return { quiz, participantName, answers, score: this.countCorrect(quiz, answers) };
   }
 
   private async findQuiz(id: string): Promise<QuizModel> {
@@ -91,7 +144,7 @@ export class QuizService {
   }
 
   /** Unanswered questions count as wrong. */
-  private score(quiz: QuizModel, answers: Answer[]): number {
+  private countCorrect(quiz: QuizModel, answers: Answer[]): number {
     return answers.filter((answer) => {
       const question = quiz.questions.find((q) => q.id === answer.questionId);
       return question?.correctChoiceId === answer.choiceId;

@@ -45,3 +45,29 @@ export type PublicQuestion = Omit<Question, 'correctChoiceId'>;
 
 /** A quiz as sent to the client. */
 export type PublicQuiz = Omit<Quiz, 'questions'> & { questions: PublicQuestion[] };
+
+/** The result of checking answers, before anything is saved. */
+export interface Score {
+  score: number;
+  total: number;
+}
+
+/** Percent of questions that must be right to pass. */
+export const PASS_PERCENT = 50;
+
+export function isPassing(score: number, total: number): boolean {
+  return total > 0 && (score / total) * 100 >= PASS_PERCENT;
+}
+
+/** One row on a scoreboard. */
+export type ScoreEntry = Pick<
+  Submission,
+  'id' | 'participantName' | 'score' | 'total' | 'submittedAt'
+>;
+
+export interface Scoreboard {
+  /** Highest score first. */
+  passed: ScoreEntry[];
+  /** Lowest score first. */
+  failed: ScoreEntry[];
+}
