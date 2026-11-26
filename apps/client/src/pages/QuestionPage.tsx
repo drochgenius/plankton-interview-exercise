@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { ApiError, submitAnswers } from '../api';
+import { ApiError, scoreAnswers } from '../api';
 import { Button } from '../components/Button';
 import { ChoiceCard } from '../components/ChoiceCard';
 import choiceStyles from '../components/ChoiceCard.module.scss';
@@ -8,6 +8,7 @@ import { Actions, Card, ErrorBox, Layout } from '../components/Layout';
 import { MathText } from '../components/MathText';
 import { QuizProgress } from '../components/QuizProgress';
 import { useQuizSession } from '../session/QuizSessionContext';
+import { toAnswers } from '../session/quizSession.reducer';
 
 export function QuestionPage() {
   const { id = '' } = useParams();
@@ -20,7 +21,7 @@ export function QuestionPage() {
     return <Navigate to={`/quizzes/${id}`} replace />;
   }
   // Already finished (for example the player pressed the browser Back button).
-  if (session.submission) {
+  if (session.score) {
     return <Navigate to={`/quizzes/${id}/result`} replace />;
   }
 
@@ -37,12 +38,8 @@ export function QuestionPage() {
     setSubmitting(true);
     setErrorDetail(null);
     try {
-      const answers = session.questions.flatMap((q) => {
-        const choiceId = session.answers[q.id];
-        return choiceId ? [{ questionId: q.id, choiceId }] : [];
-      });
-      const submission = await submitAnswers(id, session.participantName, answers);
-      dispatch({ type: 'finish', submission });
+      const score = await scoreAnswers(id, session.participantName, toAnswers(session));
+      dispatch({ type: 'scored', score });
       navigate(`/quizzes/${id}/result`);
     } catch (error) {
       setErrorDetail(error instanceof ApiError ? error.message : 'The server did not answer.');
@@ -74,7 +71,7 @@ export function QuestionPage() {
         </fieldset>
         {failed && (
           <ErrorBox
-            message="Oops! We could not save your score. Please try again."
+            message="Oops! We could not check your answers. Please try again."
             detail={errorDetail}
           />
         )}

@@ -1,4 +1,4 @@
-import type { PublicQuestion, Submission } from 'shared-types';
+import type { Answer, PublicQuestion, Score, Submission } from 'shared-types';
 
 export interface QuizSessionState {
   quizId: string;
@@ -8,6 +8,9 @@ export interface QuizSessionState {
   currentIndex: number;
   /** Chosen choice id for each question id. */
   answers: Record<string, string>;
+  /** Set when the quiz is finished and checked. Not saved yet. */
+  score: Score | null;
+  /** Set once the score has been saved. */
   submission: Submission | null;
 }
 
@@ -18,7 +21,16 @@ export type SessionAction =
   | { type: 'start'; quizId: string; participantName: string; questions: PublicQuestion[] }
   | { type: 'selectAnswer'; choiceId: string }
   | { type: 'next' }
+  | { type: 'scored'; score: Score }
   | { type: 'finish'; submission: Submission };
+
+/** The answers the player chose, in question order. Unanswered questions are left out. */
+export function toAnswers(session: QuizSessionState): Answer[] {
+  return session.questions.flatMap((q) => {
+    const choiceId = session.answers[q.id];
+    return choiceId ? [{ questionId: q.id, choiceId }] : [];
+  });
+}
 
 export function sessionReducer(state: SessionState, action: SessionAction): SessionState {
   switch (action.type) {
@@ -29,6 +41,7 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
         questions: action.questions,
         currentIndex: 0,
         answers: {},
+        score: null,
         submission: null,
       };
     case 'selectAnswer': {
@@ -39,6 +52,8 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
     case 'next':
       if (!state || state.currentIndex >= state.questions.length - 1) return state;
       return { ...state, currentIndex: state.currentIndex + 1 };
+    case 'scored':
+      return state ? { ...state, score: action.score } : state;
     case 'finish':
       return state ? { ...state, submission: action.submission } : state;
   }

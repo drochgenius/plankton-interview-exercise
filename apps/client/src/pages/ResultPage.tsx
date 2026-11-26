@@ -1,8 +1,13 @@
+import { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
-import { ButtonLink } from '../components/Button';
-import { Actions, Card, Layout } from '../components/Layout';
+import { isPassing, type Scoreboard as ScoreboardData } from 'shared-types';
+import { ApiError, getScoreboard, submitAnswers } from '../api';
+import { Button, ButtonLink } from '../components/Button';
+import { Actions, Card, ErrorBox, Layout } from '../components/Layout';
 import { QuizProgress } from '../components/QuizProgress';
+import { Scoreboard } from '../components/Scoreboard';
 import { useQuizSession } from '../session/QuizSessionContext';
+import { toAnswers } from '../session/quizSession.reducer';
 import styles from './Pages.module.scss';
 
 export function resultMessage(score: number, total: number): string {
@@ -14,13 +19,47 @@ export function resultMessage(score: number, total: number): string {
 
 export function ResultPage() {
   const { id = '' } = useParams();
-  const { session } = useQuizSession();
+  const { session, dispatch } = useQuizSession();
+  const [submitting, setSubmitting] = useState(false);
+  const [errorDetail, setErrorDetail] = useState<string | null>(null);
+  const [scoreboard, setScoreboard] = useState<ScoreboardData | null>(null);
 
-  if (!session || session.quizId !== id || !session.submission) {
+  const saved = session?.submission ?? null;
+
+  // Loads the scoreboard once the score has been saved.
+  useEffect(() => {
+    if (!saved || scoreboard) return;
+    let cancelled = false;
+    getScoreboard(id)
+      .then((data) => {
+        if (!cancelled) setScoreboard(data);
+      })
+      .catch(() => {
+        if (!cancelled) setErrorDetail('The scoreboard could not load. Your score is saved.');
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [id, saved, scoreboard]);
+
+  if (!session || session.quizId !== id || !session.score) {
     return <Navigate to={`/quizzes/${id}`} replace />;
   }
 
-  const { score, total } = session.submission;
+  const { score, total } = session.score;
+
+  async function submit() {
+    if (!session) return;
+    setSubmitting(true);
+    setErrorDetail(null);
+    try {
+      const submission = await submitAnswers(id, session.participantName, toAnswers(session));
+      dispatch({ type: 'finish', submission });
+    } catch (error) {
+      setErrorDetail(error instanceof ApiError ? error.message : 'The server did not answer.');
+      setSubmitting(false);
+    }
+  }
 
   return (
     <Layout>
@@ -36,10 +75,24 @@ export function ResultPage() {
           {score} / {total}
         </p>
         <p>{resultMessage(score, total)}</p>
+        {errorDetail && <ErrorBox message="Oops! Something went wrong." detail={errorDetail} />}
         <Actions>
           <ButtonLink to="/">Back to quizzes</ButtonLink>
+          {!saved && (
+            <Button disabled={submitting} onClick={submit}>
+              Submit Score
+            </Button>
+          )}
         </Actions>
       </Card>
+
+      {saved && scoreboard && (
+        <Scoreboard
+          data={scoreboard}
+          startOn={isPassing(score, total) ? 'passed' : 'failed'}
+          yourId={saved.id}
+        />
+      )}
     </Layout>
   );
 }

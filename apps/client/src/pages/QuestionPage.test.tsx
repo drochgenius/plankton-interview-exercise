@@ -56,7 +56,7 @@ describe('QuestionPage', () => {
 
   it('submits every answer on Finish and shows the result', async () => {
     const { user, fetchMock } = await startQuiz({
-      'POST /api/quizzes/math-practice/submissions': () =>
+      'POST /api/quizzes/math-practice/score': () =>
         json(
           {
             id: 's1',
@@ -89,7 +89,7 @@ describe('QuestionPage', () => {
   it('shows the server error on a failed submission, keeps the answers and can try again', async () => {
     let calls = 0;
     const { user } = await startQuiz({
-      'POST /api/quizzes/math-practice/submissions': () =>
+      'POST /api/quizzes/math-practice/score': () =>
         ++calls === 1
           ? json({ error: 'participantName must be a non-empty string.' }, 400)
           : json(
@@ -111,7 +111,7 @@ describe('QuestionPage', () => {
     await user.click(screen.getByRole('button', { name: 'Finish' }));
 
     const alert = await screen.findByRole('alert');
-    expect(alert).toHaveTextContent('Oops! We could not save your score. Please try again.');
+    expect(alert).toHaveTextContent('Oops! We could not check your answers. Please try again.');
     expect(alert).toHaveTextContent('participantName must be a non-empty string.');
     expect(screen.getAllByRole('radio')[0]).toBeChecked();
 
@@ -132,7 +132,7 @@ describe('QuestionPage after Finish', () => {
       submittedAt: '2026-01-01T00:00:00.000Z',
     };
     const { user, fetchMock } = await startQuiz({
-      'POST /api/quizzes/math-practice/submissions': () => json(submission, 201),
+      'POST /api/quizzes/math-practice/score': () => json(submission, 201),
     });
     await user.click(screen.getAllByRole('radio')[0]!);
     await user.click(screen.getByRole('button', { name: 'Next' }));
